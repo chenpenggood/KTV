@@ -1,7 +1,4 @@
-
-```!
-声明学习用，原作者在此链接([https://github.com/1046224544/ktv-select_music-system]https://github.com/1046224544/ktv-select_music-system)
-```
+## 声明学习用，原作者在此链接([https://github.com/1046224544/ktv-select_music-system]https://github.com/1046224544/ktv-select_music-system) ##
 
 **7天撸完KTV点歌系统,含后台管理系统(完整版)**
 
