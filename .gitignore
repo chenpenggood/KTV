@@ -1,0 +1,4 @@
+/node_modules
+/ktv-client/node_modules
+/ktv-admin/node_modules
+*.log
