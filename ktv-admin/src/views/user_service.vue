@@ -155,7 +155,7 @@ export default {
     width: 100%;
     height: 100%;
     background-image: url(../assets/image/user_service-bg.jpg);
-    background-size: 100% 100%;
+    background-size: 100%;
     display: flex;
     align-content: center;
     justify-content: center;
@@ -169,7 +169,7 @@ export default {
         padding-top: 40px;
         width:600px;
         height: 250px;
-        background: rgba(0, 0, 0, .1);
+        background: rgba(255, 255, 255, 1);
     }
 
     .order-current{

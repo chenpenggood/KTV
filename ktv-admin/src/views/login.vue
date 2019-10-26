@@ -1,17 +1,17 @@
 <template>
     <div class="login">
         <div class="login-title">
-            后台管理系统
+            KTV Admin
         </div>
         <div class="form-box">
              <el-tabs class="sign-login" v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="Log in" name="log_in">
                     <el-form class="login-form" label-position="top" size="small" :inline-message="inlinemessage" :model="form" :rules="rule" ref="login_register" label-width="100px">
                         <el-form-item label="Email address" prop="email">
-                            <el-input type="text" v-model="form.email" placeholder="请输入邮箱"></el-input>
+                            <el-input type="text" v-model="form.email" placeholder="请输入邮箱" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="Password" prop="password">
-                            <el-input type="password" @keypress.enter.native="submitForm('form')" show-password v-model="form.password" placeholder="请输入密码"></el-input>
+                            <el-input type="password" @keypress.enter.native="submitForm('form')" show-password v-model="form.password" placeholder="请输入密码"  autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="Security Code" prop="inputCaptcha">
                             <div class="yzm">
@@ -27,13 +27,13 @@
                 <el-tab-pane label="Sign up" name="sign_up">
                     <el-form class="register-form" label-position="top" size="small" :inline-message="inlinemessage" :model="form" :rules="rule" ref="login_register" label-width="100px">
                         <el-form-item label="User name" prop="username">
-                            <el-input type="text" v-model="form.username" placeholder="请输入昵称"></el-input>
+                            <el-input type="text" v-model="form.username" placeholder="请输入昵称" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="Email address" prop="email">
-                            <el-input type="text" v-model="form.email" placeholder="请输入邮箱"></el-input>
+                            <el-input type="text" v-model="form.email" placeholder="请输入邮箱" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="Password" prop="password">
-                            <el-input type="password" @keypress.enter.native="submitForm('registerForm')" show-password v-model="form.password" placeholder="请输入密码"></el-input>
+                            <el-input type="password" @keypress.enter.native="submitForm('registerForm')" show-password v-model="form.password" placeholder="请输入密码"  autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button class="register-btn" type="primary" @click="submitForm('registerForm')">Sign up</el-button>

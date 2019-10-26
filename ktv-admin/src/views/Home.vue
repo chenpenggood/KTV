@@ -21,20 +21,16 @@ export default {
 <style lang="less" scoped>
 .home{
     min-width: 1200px;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 100%;padding-top:60px;height:100%;
     .nav{
-        width:100%;
+        width:100%;position:fixed;top:0;left:0;right:0;z-index:100;
     }
 
     .content{
         flex: 1;
         width: 100%;
         height: 100%;
-        overflow-y: scroll;
+        // overflow-y: scroll;
     }
 }
 </style>

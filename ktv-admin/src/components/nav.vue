@@ -3,10 +3,10 @@
         <Row>
             <Menu mode="horizontal" :theme="theme">
                 <el-col :span="4">
-                    <div class="nav-logo">后台管理系统</div>
+                    <div class="nav-logo" @click="goIndex">KTV Admin</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="current-time">{{nowTime}}</div>
+                    <div class="current-time">日期：{{nowTime}}</div>
                 </el-col>
                 <el-col :span="2">
                     <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#515a6e" text-color="#fff" active-text-color="#fff">
@@ -89,7 +89,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.wsmnav{
+.wsmnav{width:100%;
     .opera-btn{
         position: relative;
     }
@@ -103,7 +103,7 @@ export default {
         line-height: 60px;
         color: rgb(192, 190, 190);
         font-size: 30px;
-        width: 100%;
+        width: 100%;cursor: pointer;
         text-align: center;
         font-family: "隶书";
     }

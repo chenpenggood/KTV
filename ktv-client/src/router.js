@@ -63,7 +63,7 @@ vueRouter.afterEach((to, next) => {
     if(to.meta.title){
         document.title = to.meta.title;
     }else{
-        document.title = "自助点歌系统";
+        document.title = "KTV Singer";
     }
     
 })

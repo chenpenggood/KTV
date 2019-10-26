@@ -37,7 +37,7 @@ const vueRouter = new Router({
         name:"login",
         component:Login,
         meta:{
-          title:"后台登录"
+          title:"KTV Login"
         }
       },
       {
@@ -45,7 +45,7 @@ const vueRouter = new Router({
           name:"NotFound",
           component:NotFound,
           meta:{
-              title:"页面找不到"
+              title:"NotFount Page"
           }
       }
   ]
@@ -75,7 +75,7 @@ vueRouter.afterEach((to, next) => {
     if(to.meta.title){
         document.title = to.meta.title;
     }else{
-        document.title = "KTV后台管理系统";
+        document.title = "KTV Admin";
     }
 })
 

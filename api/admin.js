@@ -316,7 +316,7 @@ router.post("/account/login", (req, res) => {
                     const rule = {
                         id:String(admin._id),
                         email:admin.email,
-                        username:admin.username,
+                        username:admin.username || email,
                         date:admin.date,
                         identity:admin.identity
                     };  
