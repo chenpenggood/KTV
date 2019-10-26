@@ -1,12 +1,14 @@
+
+```!
+声明学习用，原作者在此链接([https://github.com/1046224544/ktv-select_music-system]https://github.com/1046224544/ktv-select_music-system)
+```
+
 **7天撸完KTV点歌系统,含后台管理系统(完整版)**
 
 ## 最近手有点痒琢磨着做个啥,朝思暮想还是写个KTV点歌系统,模拟了一下KTV开户的思路,7天累死我了,不过技术点还挺多的,希望你可以看完（〜^㉨^)〜
 
 **用Node(Express)教你写KTV点歌系统，包括前台内容和后台管理系统，整合Express框架和Mongodb数据库服务器开发；教你用Vue.JS，ElementUI和iViewUI写出超漂亮的页面,随心点歌随心听**
 
-```!
-作者原创文章, 转载前请留言或联系作者!!!
-```
 
 # 思维导图
 ![](README/2019-10-17_093636.png)
@@ -147,7 +149,7 @@ ktv-client
 ```
 
 # **项目启动介绍**
-0. 安装mongodb,设置配置文件
+0. 安装mongodb,设置配置相应config,网站都安装教程（如果想可视化mongodb数据库，可以下载([Robo3T](https://robomongo.org/download))
 1. 首先不要改变服务器端口,否则报错.
 2. 你需要在装有Node和Vue的环境中测试，如果其中一个没有请先下载([Node下载](https://nodejs.org/en/),[Vue下载](https://cn.vuejs.org/v2/guide/installation.html)).
 3. 首先在最外层文件夹下载依赖:npm install 下载后端依赖, 
@@ -161,7 +163,13 @@ ktv-client
 7. 进入ktv-client,打开命令板,使用命令`npm run client`启动前台用户项目,启动成功后用浏览器访问`http://localhost:xxxx`
 8. 进入ktv-admin,打开命令板,使用命令`npm run admin`启动后台管理系统项目,启动成功后用浏览器访问`http://localhost:xxxx`
 9. 本例中将Mongodb部署在本地电脑上，如果你仔细阅读了这篇文档，启动项目应该是很容易的。如果你把Mongodb部署在其他地方，请自行修改`secret/mongodbURI.js`配置文件信息。
-10.项目启动成功
+10. 项目启动成功
+
+# **体验和修改**
+1. 新增admin管理员注册功能，以便登陆后台
+2. 登陆后台，在头像下有歌曲管理，可以上传本地的音乐文件，
+3. 头像下有开机服务，可以充时长，输入管理员密码，会随机弹窗一个用户账号和详细信息，这个账号可以用来登陆client客户端
+4. 基本以上这些，其他功能就是添加、删除歌曲。
 
 # 技术攻关
 ## Date方法

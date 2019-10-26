@@ -175,7 +175,7 @@ export default {
     .order-current{
         position: fixed;
         background-color: aqua;
-        margin-top: 380px;
+        margin-top: 7%;
     }
     
 }
