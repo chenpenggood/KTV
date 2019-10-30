@@ -42,7 +42,7 @@ export default {
         return{
             circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
             adSrc: "https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg",
-            autograph: "醉和金甲舞，雷鼓动山川,调箭又呼鹰，俱闻出世能。",
+            autograph: "醉和金甲舞，雷鼓动山川, 调箭又呼鹰，俱闻出世能。",
             calendarVal: new Date(),
             adminInfo: {}
         }

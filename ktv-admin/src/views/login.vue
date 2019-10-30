@@ -52,9 +52,9 @@ export default {
     data(){
         const validateCaptcha = (rule, value, callback) => {
             if(!this.inputCaptcha.trim().length){
-                callback(new Error('请输入验证码~'));
+                return callback(new Error('请输入验证码~'));
             }else{
-                callback();
+                 return callback();
             }
         }
         return{

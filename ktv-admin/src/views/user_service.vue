@@ -39,6 +39,7 @@
                 <div style="padding:5px 0px;">
                     <Icon type="ios-copy" />订单编号:<span style="padding: 0px 2px;color:#2b85e4;">{{card.order_id}}</span>
                 </div>
+                <el-button style="margin:20px auto 0;display:block;" type="primary" @click="gotoAllOrder()">查看订到管理</el-button>
             </Card> 
         </Row>
 
@@ -94,6 +95,9 @@ export default {
 
     },
     methods:{
+        gotoAllOrder(){
+            this.$router.push('/admin/allorders')
+        },
         checkPwd(){
             if(this.inputPassword.trim().length){
                 this.isCheckPassword = false;

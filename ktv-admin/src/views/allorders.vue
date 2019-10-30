@@ -1,7 +1,7 @@
 <template>
     <div class="allorders">
-        <Row style="padding:20px 60px 20px 40px;">
-            <Col style="padding:0px 0px 0px 40px;" span="20">
+        <Row style="padding:20px 0 20px;">
+            <el-col :span="10">
                 <el-date-picker
                 v-model="selectDate"
                 size="small"
@@ -13,11 +13,15 @@
                 end-placeholder="结束日期"
                 align="right">
                 </el-date-picker>
-                <Button type="primary" v-if="selectDate" style="margin-left:10px;" @click="findorders">查询</Button>
-            </Col>
-            <Col :span="4" style="text-align:right;">
-                <Button type="primary" @click="getAllOrders">所有订单</Button>
-            </Col>
+                <el-button type="primary" size="small" v-if="selectDate" style="margin-left:10px;vertical-align: top;" @click="searchOrder('time')">查询</el-button>
+            </el-col>
+            <el-col :span="6">
+                <el-input class="user-email" size="small" placeholder="请输入账号" prefix-icon="el-icon-search" clearable v-model="user_email"></el-input>
+                <el-button type="primary" size="small" style="margin-left:10px;vertical-align: top;" @click="searchOrder('userEmail')">查询</el-button>
+            </el-col>
+            <el-col :span="4" style="text-align:right;vertical-align: top;float:right;">
+                <el-button type="primary" size="small" @click="getAllOrders">所有订单</el-button>
+            </el-col>
         </Row>
         <!-- 订单数据表 -->
         <div style="width:100%;background-color:#f40;">
@@ -25,8 +29,7 @@
                 :data="allorders"
                 class="order-table"
                 style="width: 100%"
-                border
-            >
+                border>
                 <el-table-column
                     type="index"
                     label="序号"
@@ -80,19 +83,48 @@
                     align='center'
                     label="操作"
                     fixed="right"
-                    width="100">
+                    width="140">
                     <template slot-scope='scope'>
-                        <el-button 
-                            type="danger" 
-                            icon='el-icon-delete' 
-                            size="small"
-                            circle
-                            @click='onDeleteSong(scope.row,scope.$index)'
-                        ></el-button>
+                        <el-button type="danger" icon='el-icon-delete' size="small" circle @click='onDeleteSong(scope.row,scope.$index)'></el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="small" circle @click="editTime(scope.row, scope.$index)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
+        <!-- 编辑弹窗 -->
+        <el-button :plain="true" @click="notEdit">警告</el-button>
+        <el-dialog title="编辑订单(30RMB=1H)" :visible.sync="editOrderFlash" center width="55%">
+            <el-form :model="order_detailed" :rules="rule" ref="edit_order">
+                <el-form-item label="账号" :label-width="editOrderPop">
+                <el-input v-model="order_detailed.account" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="文明密码" :label-width="editOrderPop">
+                <el-input v-model="order_detailed.publicpwd" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="总金额" :label-width="editOrderPop">
+                <el-input v-model="order_detailed.money" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="续费" :label-width="editOrderPop" prop="addMoney">
+                <el-input type="text" v-model="order_detailed.addMoney" autocomplete="off" placeholder="30元兑换1小时!"></el-input>
+                </el-form-item>
+                <el-form-item label="开始时间" :label-width="editOrderPop">
+                <el-input v-model="order_detailed.startTime" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="结束时间" :label-width="editOrderPop">
+                <el-input v-model="order_detailed.endTime" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item></el-form-item>
+                <el-form-item>
+                    <el-button @click="editOrderFlash = false">取 消</el-button>
+                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                </el-form-item>
+            </el-form>
+            <!-- <div slot="footer" class="dialog-footer">
+                <el-button @click="editOrderFlash = false">取 消</el-button>
+                <el-button type="primary" @click="comfirEdit()">确 定</el-button>
+            </div> -->
+            </el-dialog>
+
         <!-- 分页 -->
         <Row>
             <Col span="24" style="text-align:right;padding:10px;">
@@ -135,8 +167,27 @@ import wsmLoading from "@/plugins/wsmLoading"
 export default {
     name:"allorders",
     data(){
+        const validNum = (rule, value, callback) => {
+            const flag = /^[1-9]\d*$/.test(value.trim());
+            if(!flag){
+                return callback(new Error('请输入金额！'))
+            }else{
+                this.order_detailed.money = Number(this.order_detailed.money) + Number(value);
+                return callback()
+            }
+        }
         return{
+            user_email:"",
             isCheckPassword:false,
+            editOrderFlash: false,
+            order_detailed: {},
+            editOrderPop: '80px',
+            rule: {
+                addMoney: [
+                    {required:true,min:1,max:12,message:"金额不能为空！",trigger: "blur"},
+                    {validator: validNum,message:'请输入正整金额！'}
+                ]
+            },
             inputPassword:'',
             noChangeData:[],
             selectDate:"",
@@ -235,16 +286,66 @@ export default {
                 this.delRow = order;
             }).catch(() => console.log("cancle"))
         },
-        findorders(){
-            const startTime = new Date(this.selectDate[0]).getTime();
-            const endTime = new Date(this.selectDate[1]).getTime();
-            const result = [];
-            this.noChangeData.forEach(item => {
-                const time = new Date(item.startTime).getTime();
-                if(time >= startTime && time <= endTime){
-                    result.push(item)
+        notEdit(){
+            this.$message({
+                message: '订单已经使用结束，不可续费！',
+                type: 'warning'
+            })
+        },
+        editTime(rowData){
+            console.log(rowData);
+            const theOrderEndTime = new Date(rowData.endTime).getTime();
+            const nowTime = new Date().getTime();
+            if(theOrderEndTime >= nowTime){
+                this.order_detailed = rowData;
+                this.editOrderFlash = true;
+            }else{
+                this.notEdit();
+            }
+            // this.$axios.get("http://localhost:8633/api/admin/orders/edit", rewriteData)
+            // .then(res => {
+
+            // })
+        },
+        submitForm(){
+            this.$refs['edit_order'].validate(valid => {
+                if(valid){
+                    this.editOrderFlash = false;
+                    var addMoney = this.order_detailed.addMoney
+                    console.log(addMoney)
                 }
             })
+        },
+        searchOrder(data){
+            var that = this;
+            switch(data){
+                case 'time':
+                    const startTime = new Date(that.selectDate[0]).getTime();
+                    const endTime = new Date(that.selectDate[1]).getTime();
+                    const result = [];
+                    that.noChangeData.forEach(item => {
+                        const time = new Date(item.startTime).getTime();
+                        if(time >= startTime && time <= endTime){
+                            result.push(item)
+                        }
+                    })
+                    that.findorders(result);
+                    break;
+                case 'userEmail':
+                    const userEmail = that.user_email;
+                    const res = [];
+                    that.noChangeData.forEach(item => {
+                        const account = item.account;
+                        if(account.indexOf(userEmail) > -1){
+                            res.push(item)
+                        }
+                    });
+                    that.findorders(res);
+                    break;
+            }
+            
+        },
+        findorders(result){
             this.allorders = result;
             this.allTableData = result;
             this.setPaginations();
@@ -292,5 +393,11 @@ export default {
     width: 100%;
     height: 100%;
     padding: 20px 60px;
+    .user-email{width:74%;}
+    .el-dialog{
+        .el-form-item{width:50%;display: inline-block;
+            &:nth-last-of-type(1){text-align: right;}
+        }
+    }
 }
 </style>

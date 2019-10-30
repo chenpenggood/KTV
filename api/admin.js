@@ -249,22 +249,35 @@ router.post("/account/new", passport.authenticate("jwt", {session:false}), async
 // 获取所有订单
 router.get("/orders/all", passport.authenticate("jwt", {session:false}), async(req, res) => {
     UserAndOrders.find()
-                .then(orders => {
-                    res.send(orders);
-                })
+    .then(orders => {
+        res.send(orders);
+    })
+})
+
+// 以订单编号编辑订单
+router.post("/orders/edit", passport.authenticate("jwt", {session:false}), async(req, res) => {
+    const order_id = req.body.order_id;
+    await UserAndOrders.findOneAndUpdate({order_id},{$set: req.body.rewriteData})
+    .then(orders => {
+        orders.save()
+        .then(() => {
+            console.log("订单删除成功");
+            res.json({status:"200", result:"删除成功"});
+        })
+    })
 })
 
 // 以订单编号删除订单
 router.post("/orders/del", passport.authenticate("jwt", {session:false}), async(req, res) => {
     const order_id = req.body.order_id;
     await UserAndOrders.findOneAndRemove({order_id})
-            .then(orders => {
-                orders.save()
-                        .then(() => {
-                            console.log("订单删除成功");
-                            res.json({status:"200", result:"删除成功"});
-                        })
-            })
+    .then(orders => {
+        orders.save()
+        .then(() => {
+            console.log("订单删除成功");
+            res.json({status:"200", result:"删除成功"});
+        })
+    })
 })
 
 // 管理员注册
