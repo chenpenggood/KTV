@@ -233,6 +233,7 @@ router.post("/account/new", passport.authenticate("jwt", {session:false}), async
         startTime:req.body.startTime,
         endTime:req.body.endTime,
         money:req.body.totalMoney,
+        addMoney: req.body.addMoney || 0,
         account:orderInfo.account,
         username:orderInfo.username,
         password:orderInfo.password,
@@ -257,12 +258,21 @@ router.get("/orders/all", passport.authenticate("jwt", {session:false}), async(r
 // 以订单编号编辑订单
 router.post("/orders/edit", passport.authenticate("jwt", {session:false}), async(req, res) => {
     const order_id = req.body.order_id;
-    await UserAndOrders.findOneAndUpdate({order_id},{$set: req.body.rewriteData})
+    await UserAndOrders.findOneAndUpdate({order_id},{
+        $set:{
+            money: req.body.money,
+            addMoney: req.body.addMoney,
+            endTime: req.body.endTime
+        }
+    },{new: true})
     .then(orders => {
         orders.save()
         .then(() => {
-            console.log("订单删除成功");
-            res.json({status:"200", result:"删除成功"});
+            console.log("续费编辑成功");
+            res.json({status:"200", result:"续费编辑成功",orders});
+        }).catch(err => {
+            console(err);
+            res.status(500).json({status:"500", result:"编辑失败"});
         })
     })
 })

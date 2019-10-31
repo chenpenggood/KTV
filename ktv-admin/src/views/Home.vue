@@ -23,7 +23,7 @@ export default {
     min-width: 1200px;
     width: 100%;padding-top:60px;height:100%;
     .nav{
-        width:100%;position:fixed;top:0;left:0;right:0;z-index:100;
+        width:100%;position:fixed;top:0;left:0;right:0;z-index:100;min-width:1200px;
     }
 
     .content{

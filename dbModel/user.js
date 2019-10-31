@@ -26,6 +26,10 @@ const userModel = mongoose.Schema({
         require:true,
         type:String
     },
+    addMoney:{
+        require:true,
+        type: String
+    },
     username:{
         require:true,
         type:String

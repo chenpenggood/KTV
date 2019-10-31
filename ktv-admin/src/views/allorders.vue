@@ -93,7 +93,7 @@
         </div>
         <!-- 编辑弹窗 -->
         <el-button :plain="true" @click="notEdit">警告</el-button>
-        <el-dialog title="编辑订单(30RMB=1H)" :visible.sync="editOrderFlash" center width="55%">
+        <el-dialog title="编辑订单(30RMB=1H)" :visible.sync="editOrderFlash" center width="55%" @close="closeEdit()" :destroy-on-close="true">
             <el-form :model="order_detailed" :rules="rule" ref="edit_order">
                 <el-form-item label="账号" :label-width="editOrderPop">
                 <el-input v-model="order_detailed.account" autocomplete="off" :disabled="true"></el-input>
@@ -102,7 +102,7 @@
                 <el-input v-model="order_detailed.publicpwd" autocomplete="off" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="总金额" :label-width="editOrderPop">
-                <el-input v-model="order_detailed.money" autocomplete="off" :disabled="true"></el-input>
+                <el-input v-model="newEdit.money" autocomplete="off" :disabled="true" style="color:#000!important;"></el-input>
                 </el-form-item>
                 <el-form-item label="续费" :label-width="editOrderPop" prop="addMoney">
                 <el-input type="text" v-model="order_detailed.addMoney" autocomplete="off" placeholder="30元兑换1小时!"></el-input>
@@ -111,11 +111,11 @@
                 <el-input v-model="order_detailed.startTime" autocomplete="off" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="结束时间" :label-width="editOrderPop">
-                <el-input v-model="order_detailed.endTime" autocomplete="off" :disabled="true"></el-input>
+                <el-input v-model="newEdit.endTime" autocomplete="off" :disabled="true" style="color:#fff;"></el-input>
                 </el-form-item>
                 <el-form-item></el-form-item>
                 <el-form-item>
-                    <el-button @click="editOrderFlash = false">取 消</el-button>
+                    <el-button @click="closeEdit()">取 消</el-button>
                     <el-button type="primary" @click="submitForm()">确 定</el-button>
                 </el-form-item>
             </el-form>
@@ -164,15 +164,18 @@
 </template>
 <script>
 import wsmLoading from "@/plugins/wsmLoading"
+import "@/plugins/Date"
 export default {
     name:"allorders",
     data(){
         const validNum = (rule, value, callback) => {
             const flag = /^[1-9]\d*$/.test(value.trim());
             if(!flag){
-                return callback(new Error('请输入金额！'))
+                value = 0;
+                this.changeOrder(value);
+                return callback(new Error('请输入金额！'));
             }else{
-                this.order_detailed.money = Number(this.order_detailed.money) + Number(value);
+                this.changeOrder(value);
                 return callback()
             }
         }
@@ -180,6 +183,11 @@ export default {
             user_email:"",
             isCheckPassword:false,
             editOrderFlash: false,
+            saveOriginData: {},
+            newEdit:{
+                money:"",
+                endTime: ""
+            },
             order_detailed: {},
             editOrderPop: '80px',
             rule: {
@@ -286,35 +294,75 @@ export default {
                 this.delRow = order;
             }).catch(() => console.log("cancle"))
         },
+        // 订单过期不能编辑
         notEdit(){
             this.$message({
                 message: '订单已经使用结束，不可续费！',
                 type: 'warning'
             })
         },
+        // 编辑订单，续费时长
         editTime(rowData){
-            console.log(rowData);
             const theOrderEndTime = new Date(rowData.endTime).getTime();
             const nowTime = new Date().getTime();
             if(theOrderEndTime >= nowTime){
+                this.saveOriginData = rowData;
                 this.order_detailed = rowData;
+                this.newEdit.money = rowData.money;
+                this.newEdit.endTime = rowData.endTime;
                 this.editOrderFlash = true;
             }else{
                 this.notEdit();
             }
-            // this.$axios.get("http://localhost:8633/api/admin/orders/edit", rewriteData)
-            // .then(res => {
-
-            // })
         },
+        // 提交订单修改
         submitForm(){
-            this.$refs['edit_order'].validate(valid => {
+            var that = this;
+            that.$refs['edit_order'].validate(valid => {
                 if(valid){
-                    this.editOrderFlash = false;
-                    var addMoney = this.order_detailed.addMoney
-                    console.log(addMoney)
+                    that.editOrderFlash = false;
+                    const newEditData = that.newEdit;
+                    const newOrderData = that.order_detailed;
+                    console.log(newOrderData, newEditData)
+                    let editData = {};
+                    for(var k in newOrderData){
+                        if(newEditData[k]){
+                            editData[k] = newEditData[k]
+                        }else{
+                            editData[k] = newOrderData[k]
+                        }
+                    }
+                    // const editData = Object.assign(newOrderData, newEditData); // 有问题，改变了order_detailed值
+                    
+                    // console.log(editData)
+
+                    that.$axios.post("http://localhost:8633/api/admin/orders/edit", editData)
+                    .then(res => {
+                        if(res.status == 200){
+                            // that.order_detailed = res.data.orders; // 重新获取全部订单，没必要
+                            that.getAllOrders();
+                        }
+                    }).catch(err => {
+                        that.order_detailed = that.saveOriginData;
+                        wsmLoading.start(res.data.result)
+                    })
                 }
             })
+        },
+        // 修改订单动态显示
+        changeOrder(value){
+            const oldMoney = Number(this.order_detailed.money);
+            const oldEndTime = this.order_detailed.endTime;
+            const newEndTime = value*(60*60*1000/30) + new Date(oldEndTime).getTime();
+            this.newEdit.money = oldMoney + Number(value);
+            this.newEdit.endTime = new Date(newEndTime).format("yyyy/MM/dd HH:mm:ss");
+        },
+        // 取消、关闭修改订单
+        closeEdit(){
+            setTimeout(() => {
+                this.order_detailed.addMoney = "";
+            },300);
+            this.editOrderFlash = false;
         },
         searchOrder(data){
             var that = this;
